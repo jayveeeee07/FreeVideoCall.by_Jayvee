@@ -1,1 +1,54 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎥 Video Call</h1>
+            <div id="roomInfo">
+                <span id="roomName">Room: Loading...</span>
+                <span id="userNameDisplay">You: Loading...</span>
+            </div>
+        </header>
+        
+        <main>
+            <div class="video-container">
+                <div id="videoGrid" class="video-grid">
+                    <!-- Local video -->
+                    <div class="video-wrapper local-video">
+                        <video id="localVideo" autoplay playsinline muted></video>
+                        <div class="user-name" id="localUserName">You</div>
+                    </div>
+                    <!-- Remote videos will be added here dynamically -->
+                </div>
+                
+                <!-- Controls -->
+                <div class="controls">
+                    <button id="muteAudio" class="control-btn" title="Mute/Unmute">🎤</button>
+                    <button id="muteVideo" class="control-btn" title="Video On/Off">📹</button>
+                    <button id="screenShare" class="control-btn" title="Share Screen">📤</button>
+                    <button id="hangUp" class="control-btn" title="End Call" style="background: #f56565;">📞</button>
+                </div>
+            </div>
+            
+            <!-- Chat Panel -->
+            <div class="chat-panel">
+                <h3>Chat</h3>
+                <div id="chatMessages" class="chat-messages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Type your message...">
+                    <button id="sendChat">Send</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
