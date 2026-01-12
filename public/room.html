@@ -1469,15 +1469,17 @@
         function getUserInitials(name) {
             return name ? name.charAt(0).toUpperCase() : 'U';
         }
-
-        // WebSocket initialization
-        function initializeWebSocket() {
-            return new Promise((resolve, reject) => {
-                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${protocol}//${window.location.host}`;
-                
-                ws = new WebSocket(wsUrl);
-                
+// In your WebSocket initialization function:
+function initializeWebSocket() {
+  // Vercel automatically provides the URL
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = process.env.NODE_ENV === 'development' 
+    ? 'ws://localhost:3000' 
+    : `${protocol}//${window.location.host}`;
+  
+  ws = new WebSocket(wsUrl);
+  // ... rest of your WebSocket code
+     
                 ws.onopen = () => {
                     console.log('WebSocket connected');
                     elements.connectionStatus.textContent = 'Connected';
