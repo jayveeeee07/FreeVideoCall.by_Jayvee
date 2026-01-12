@@ -73,13 +73,17 @@ async function initializeRoomPage() {
     // Setup controls
     setupControls();
 }
-
+// In your WebSocket initialization function:
 function initializeWebSocket() {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-    
-    ws = new WebSocket(wsUrl);
-    
+  // Vercel automatically provides the URL
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = process.env.NODE_ENV === 'development' 
+    ? 'ws://localhost:3000' 
+    : `${protocol}//${window.location.host}`;
+  
+  ws = new WebSocket(wsUrl);
+  // ... rest of your WebSocket code
+
     ws.onopen = () => {
         console.log('WebSocket connected');
         ws.send(JSON.stringify({
