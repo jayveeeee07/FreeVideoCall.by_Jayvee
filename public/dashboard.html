@@ -1,1 +1,658 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - VideoChat Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background: #f7fafc;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-info h3 {
+            margin: 0;
+            color: #2d3748;
+        }
+        
+        .user-info p {
+            margin: 5px 0 0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 10px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            color: #4a5568;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 15px;
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #feb2b2;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .create-room-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .action-card h3 {
+            margin: 15px 0 10px;
+            color: #2d3748;
+        }
+        
+        .action-card p {
+            color: #718096;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .action-card.join .action-icon {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .action-card.create .action-icon {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+        
+        .action-card.contacts .action-icon {
+            background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+        }
+        
+        .action-card.schedule .action-icon {
+            background: linear-gradient(135deg, #f687b3 0%, #d53f8c 100%);
+        }
+        
+        /* Rooms Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .room-card:hover {
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .room-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .room-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .room-badge.public {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .room-badge.private {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .room-description {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .room-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .room-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .room-btn.join {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .room-btn.copy {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #2d3748;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        /* Contacts List */
+        .contacts-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+        
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .contact-email {
+            color: #718096;
+            font-size: 0.9rem;
+            margin: 5px 0 0;
+        }
+        
+        .contact-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #48bb78;
+        }
+        
+        .contact-status.offline {
+            background: #a0aec0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                margin-bottom: 20px;
+            }
+            
+            .nav-item {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">🎥 VideoChat Pro</div>
+            
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-info">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userEmail">...</p>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#rooms" class="nav-link" data-section="rooms">
+                        <span>👥</span>
+                        <span>My Rooms</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contacts" class="nav-link" data-section="contacts">
+                        <span>👤</span>
+                        <span>Contacts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#history" class="nav-link" data-section="history">
+                        <span>📅</span>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link" data-section="settings">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <button class="logout-btn" id="logoutBtn">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 id="pageTitle">Dashboard</h1>
+                <button class="create-room-btn" id="createRoomBtn">
+                    <span>➕</span>
+                    <span>Create Room</span>
+                </button>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboardSection" class="content-section active">
+                <div class="quick-actions">
+                    <div class="action-card join" id="quickJoinBtn">
+                        <div class="action-icon">🚪</div>
+                        <h3>Join Room</h3>
+                        <p>Enter a room ID to join existing call</p>
+                    </div>
+                    
+                    <div class="action-card create" id="quickCreateBtn">
+                        <div class="action-icon">➕</div>
+                        <h3>Create Room</h3>
+                        <p>Start a new video call room</p>
+                    </div>
+                    
+                    <div class="action-card contacts" id="quickContactsBtn">
+                        <div class="action-icon">👤</div>
+                        <h3>Add Contact</h3>
+                        <p>Find and add friends</p>
+                    </div>
+                    
+                    <div class="action-card schedule" id="quickScheduleBtn">
+                        <div class="action-icon">📅</div>
+                        <h3>Schedule Call</h3>
+                        <p>Plan calls for later</p>
+                    </div>
+                </div>
+                
+                <h2 style="margin-bottom: 20px;">Recent Rooms</h2>
+                <div id="recentRooms" class="rooms-grid">
+                    <!-- Rooms will be loaded here -->
+                    <div class="loading">Loading rooms...</div>
+                </div>
+            </div>
+            
+            <!-- Rooms Section -->
+            <div id="roomsSection" class="content-section">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="roomSearch" placeholder="Search rooms...">
+                </div>
+                <div id="allRooms" class="rooms-grid">
+                    <!-- All rooms will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Contacts Section -->
+            <div id="contactsSection" class="content-section">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="contactSearch" placeholder="Search contacts...">
+                </div>
+                <button class="auth-btn" id="addContactBtn" style="margin-bottom: 20px;">➕ Add Contact</button>
+                <div id="contactsList" class="contacts-list">
+                    <!-- Contacts will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- History Section -->
+            <div id="historySection" class="content-section">
+                <h2>Call History</h2>
+                <p>Coming soon...</p>
+            </div>
+            
+            <!-- Settings Section -->
+            <div id="settingsSection" class="content-section">
+                <h2>Settings</h2>
+                <p>Coming soon...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Room Modal -->
+    <div class="modal" id="createRoomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Room</h2>
+                <button class="modal-close" id="closeCreateRoomModal">&times;</button>
+            </div>
+            <form id="createRoomForm">
+                <div class="form-group">
+                    <label for="roomName">Room Name</label>
+                    <input type="text" id="roomName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="roomDescription">Description (Optional)</label>
+                    <textarea id="roomDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="maxParticipants">Max Participants</label>
+                    <select id="maxParticipants">
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isPublic" checked>
+                        Public Room (Anyone with link can join)
+                    </label>
+                </div>
+                
+                <button type="submit" class="auth-btn">Create Room</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Join Room Modal -->
+    <div class="modal" id="joinRoomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Room</h2>
+                <button class="modal-close" id="closeJoinRoomModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="joinRoomId">Room ID</label>
+                <input type="text" id="joinRoomId" placeholder="Enter room ID" required>
+            </div>
+            <div class="form-group">
+                <label for="joinUserName">Your Name</label>
+                <input type="text" id="joinUserName" value="" required>
+            </div>
+            <button class="auth-btn" id="joinRoomConfirmBtn">Join Room</button>
+        </div>
+    </div>
+    
+    <!-- Add Contact Modal -->
+    <div class="modal" id="addContactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Contact</h2>
+                <button class="modal-close" id="closeAddContactModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="contactUsername">Username or Email</label>
+                <input type="text" id="contactUsername" placeholder="Enter username or email" required>
+            </div>
+            <button class="auth-btn" id="addContactConfirmBtn">Add Contact</button>
+        </div>
+    </div>
+    
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
